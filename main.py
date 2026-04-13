@@ -367,10 +367,14 @@ class Gioco:
                 self.serpente.scudo_attivo = False
                 self.hud.aggiungi_notifica("Scudo distrutto!", NEON_ROSSO)
                 self.audio.riproduci('collisione')
-                # Rimbalza: rimetti la testa nella posizione precedente
-                self.serpente.corpo.pop(0)
-                if len(self.serpente.corpo) > 0:
-                    self.serpente.corpo.insert(0, self.serpente.corpo[0])
+                # Inverti la direzione per rimbalzare
+                self.serpente.direzione = DIREZIONI_OPPOST[self.serpente.direzione]
+                self.serpente.prossima_direzione = self.serpente.direzione
+                # Riporta la testa dentro i limiti della griglia
+                hx, hy = self.serpente.corpo[0]
+                hx = max(0, min(GRIGLIA_LARGHEZZA - 1, hx))
+                hy = max(0, min(GRIGLIA_ALTEZZA - 1, hy))
+                self.serpente.corpo[0] = (hx, hy)
             else:
                 self._game_over()
                 return
