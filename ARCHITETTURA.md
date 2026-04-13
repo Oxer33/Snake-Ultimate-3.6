@@ -1,149 +1,149 @@
-# 🏗️ ARCHITETTURA - Snake Ultimate 3.6
+# 🐍 Snake Ultimate 5.1 - Architettura del Progetto
 
-## Panoramica del Progetto
-
-Snake Ultimate 3.6 è un gioco Snake moderno costruito con Next.js 15, React 19 e TypeScript. Il progetto segue un'architettura modulare e component-based per garantire manutenibilità e scalabilità.
-
-## Stack Tecnologico
-
-| Tecnologia | Versione | Scopo |
-|------------|----------|-------|
-| Next.js | 15.1+ | Framework React (App Router) |
-| React | 19+ | Libreria UI |
-| TypeScript | 5.7+ | Type safety |
-| TailwindCSS | 3.4+ | Styling utility-first |
-| Zustand | 5.0+ | State management |
-| Canvas API | Native | Rendering grafico |
+## Panoramica
+Snake Ultimate 5.1 è un gioco Snake futuristico con effetti neon, particelle, power-up e suoni sintetizzati. Il progetto è scritto in Python usando Pygame.
 
 ## Struttura del Progetto
 
 ```
-Snake Ultimate 3.6/
-├── src/
-│   ├── app/                    # Next.js App Router
-│   │   ├── globals.css         # Stili globali e animazioni CSS
-│   │   ├── layout.tsx          # Layout root (metadata, viewport)
-│   │   └── page.tsx            # Pagina principale
-│   │
-│   ├── components/             # Componenti React
-│   │   ├── game/               # Componenti di gioco
-│   │   │   ├── GameCanvas.tsx  # Rendering Canvas del gioco
-│   │   │   └── GameContainer.tsx # Componente principale integratore
-│   │   └── ui/                 # Componenti UI riutilizzabili
-│   │       ├── TouchControls.tsx  # Controlli touch per mobile
-│   │       ├── ScoreDisplay.tsx   # Display punteggio/stats
-│   │       ├── MainMenu.tsx       # Menu principale
-│   │       └── GameOver.tsx       # Schermata Game Over
-│   │
-│   ├── store/                  # State management
-│   │   └── gameStore.ts        # Store Zustand per stato globale
-│   │
-│   ├── types/                  # Definizioni TypeScript
-│   │   └── game.ts             # Interfacce e tipi del gioco
-│   │
-│   ├── utils/                  # Utility e logica
-│   │   └── gameEngine.ts       # Motore di gioco principale
-│   │
-│   └── assets/                 # Risorse statiche (immagini, suoni)
-│
-├── public/                     # File statici pubblici
-├── package.json                # Dipendenze e scripts
-├── tsconfig.json               # Configurazione TypeScript
-├── next.config.ts              # Configurazione Next.js
-├── tailwind.config.ts          # Configurazione TailwindCSS
-└── postcss.config.mjs          # Configurazione PostCSS
+Snake Ultimate 5.1/
+├── main.py                  # Punto di ingresso - Game loop principale
+├── requirements.txt         # Dipendenze Python
+├── ARCHITETTURA.md          # Questo file - Documentazione architettura
+├── TODO_LIST.md             # Lista cose da fare/tracciamento progressi
+├── src/                     # Codice sorgente (pacchetto Python)
+│   ├── __init__.py          # Rende src un pacchetto importabile
+│   ├── config.py            # Costanti e configurazione centrale
+│   ├── snake.py             # Logica del serpente
+│   ├── food.py              # Cibo e power-ups
+│   ├── particles.py         # Sistema di particelle ed effetti visivi
+│   ├── ui.py                # HUD e griglia di sfondo
+│   ├── audio.py             # Suoni sintetizzati procedurali
+│   ├── score.py             # Salvataggio/caricamento punteggi
+│   └── screens.py           # Schermate (menu, game over, pausa, classifica)
+├── assets/                  # Risorse statiche
+│   └── icons/               # Icone del gioco
+└── dati/                    # Dati di gioco (creati automaticamente)
+    └── punteggi.json        # Punteggi salvati
 ```
 
-## Architettura dei Componenti
+## Moduli Dettagliati
 
-### Flusso di Rendering
+### `main.py` - Game Loop Principale
+- **Classe `Gioco`**: Orchestratore centrale del gioco
+- Gestisce gli stati del gioco: MENU → GIOCO → PAUSA → GAME_OVER → CLASSIFICA
+- Pattern: State Machine (macchina a stati finiti)
+- Game loop: Input → Aggiorna → Disegna → Ripeti (60 FPS)
+
+### `config.py` - Configurazione Centrale
+- Tutte le costanti del gioco in un unico posto
+- Colori neon, dimensioni schermo, velocità, probabilità
+- Facile da modificare per bilanciare il gameplay
+
+### `snake.py` - Il Serpente
+- **Classe `Serpente`**: Gestisce movimento, crescita, collisioni
+- Sistema di direzione con buffer (evita inversioni)
+- Power-up attivi con timer
+- Rendering con glow, scia, occhi animati
+- Effetto scudo visivo
+
+### `food.py` - Cibo e Power-ups
+- **Classe `Cibo`**: Singolo elemento di cibo/power-up
+- **Classe `GestoreCibo`**: Spawna e gestisce tutti i cibi
+- Tipi: NORMALE, BONUS, VELOCITÀ, SCUDO, MOLTIPLICATORE, RIDUZIONE
+- Ogni tipo ha colore, punteggio e simbolo unici
+- I power-up scadono dopo 15 secondi
+
+### `particles.py` - Effetti Particellari
+- **Classe `Particella`**: Singola particella con fisica
+- **Classe `SistemaParticelle`**: Gestisce tutte le particelle
+- Scia del serpente, esplosioni cibo, effetto scudo
+- Particelle ambientali di sfondo
+- Sistema di glow con superfici alpha
+
+### `ui.py` - Interfaccia Utente
+- **Classe `HUD`**: Punteggio, record, power-up attivi, notifiche
+- **Classe `GrigliaSfondo`**: Griglia "Tron-style" con scanline
+- Pannello superiore semi-trasparente
+- Barre di progresso per power-up e velocità
+
+### `audio.py` - Audio Sintetizzato
+- **Classe `SistemaAudio`**: Genera suoni proceduralmente
+- Nessun file audio esterno necessario!
+- Forme d'onda: sinusoidale, quadrata, dente di sega, rumore
+- Effetti: sweep, envelope ADSR
+- Suoni: mangia, bonus, power-up, game over, collisione, menu
+
+### `score.py` - Sistema Punteggi
+- **Classe `GestorePunteggi`**: Salva/carica punteggi in JSON
+- Top 10 classifica
+- Rilevamento nuovo record
+- Persistenza su file
+
+### `screens.py` - Schermate
+- **`SchermataMenu`**: Menu principale con titolo animato
+- **`SchermataGameOver`**: Risultati e opzioni post-partita
+- **`SchermataClassifica`**: Top 10 punteggi
+- **`SchermataPausa`**: Overlay semi-trasparente
+
+## Flusso di Gioco
 
 ```
-page.tsx
-  └── GameContainer.tsx
-        ├── MainMenu.tsx (stato: menu)
-        ├── GameCanvas.tsx (stato: playing)
-        │     └── Rendering su Canvas 2D
-        ├── ScoreDisplay.tsx (HUD punteggio)
-        ├── TouchControls.tsx (controlli mobile)
-        └── GameOver.tsx (stato: gameover)
+[AVVIO] → [MENU] → [GIOCO] → [GAME OVER] → [MENU/RIPROVA]
+                      ↕
+                    [PAUSA]
+                    
+[MENU] → [CLASSIFICA] → [MENU]
 ```
 
-### Flusso dei Dati
+## Controlli
 
-```
-gameEngine.ts (logica core)
-  └── Callbacks → gameStore.ts (Zustand store)
-        └── State updates → Componenti React (re-render)
-              └── Input utente → gameEngine.ts (cambio direzione)
-```
+| Tasto | Azione |
+|-------|--------|
+| ↑/W | Muovi su |
+| ↓/S | Muovi giù |
+| ←/A | Muovi sinistra |
+| →/D | Muovi destra |
+| P/ESC | Pausa |
+| M | Muto audio |
+| INVIO/SPAZIO | Conferma selezione |
 
-## Motore di Gioco (gameEngine.ts)
+## Power-ups
 
-Il motore di gioco è una classe singleton che gestisce:
+| Power-up | Colore | Effetto | Durata |
+|----------|--------|---------|--------|
+| Velocità | Ciano | +50% velocità | 5s |
+| Scudo | Magenta | Immunità collisioni | 8s |
+| x2 Punti | Arancio | Punteggio raddoppiato | 10s |
+| Riduzione | Viola | Accorcia serpente | Istantaneo |
 
-- **Game Loop**: Utilizza `requestAnimationFrame` con accumulatore per aggiornamenti a tick fisso
-- **Movimento Serpente**: Calcola la nuova posizione della testa e aggiorna i segmenti
-- **Collisioni**: Rileva collisioni con se stesso e con i bordi
-- **Cibo**: Genera cibo in posizioni casuali e gestisce il consumo
-- **Particelle**: Sistema di effetti visivi per feedback visivo
-- **Punteggio**: Tiene traccia del punteggio e del livello
+## Design Futuristico
 
-## State Management (gameStore.ts)
+- **Tema scuro** con colori neon (verde, ciano, magenta)
+- **Effetto glow** su tutti gli elementi
+- **Particelle** per scia, esplosioni, ambiente
+- **Griglia Tron-style** con scanline animata
+- **Suoni sintetizzati** per effetto arcade
+- **Animazioni fluide** a 60 FPS
 
-Zustand gestisce lo stato globale dell'applicazione:
+## Requisiti
 
-- Stato del gioco (menu, playing, paused, gameover)
-- Entità di gioco (serpente, cibo, ostacoli, particelle)
-- Statistiche (punteggio, livello, record)
-- Configurazione (modalità, difficoltà, impostazioni)
+- Python 3.8+
+- Pygame 2.5+
 
-## Design Pattern Utilizzati
+## Stato del Progetto
 
-1. **Singleton**: `gameEngine` è un'istanza singleton
-2. **Observer**: Callbacks per eventi di gioco
-3. **State Machine**: Stati del gioco ben definiti con transizioni
-4. **Component Pattern**: Componenti React modulari e riutilizzabili
-5. **Store Pattern**: Zustand per stato globale centralizzato
-
-## Modalità di Gioco
-
-| Modalità | Descrizione | Velocità | Ostacoli | Power-up |
-|----------|-------------|----------|----------|----------|
-| Classic | Tradizionale | Normale | No | No |
-| Speed | Veloce | Alta | No | Sì |
-| Obstacles | Con ostacoli | Media | Sì | Sì |
-| Zen | Rilassante | Lenta | No | No |
-| Challenge | Estrema | Molto alta | Sì | Sì |
-
-## Responsive Design
-
-Il gioco è progettato per funzionare su tutti i dispositivi:
-
-- **Desktop**: Controlli da tastiera (frecce/WASD)
-- **Mobile**: Controlli touch (D-pad virtuale)
-- **Tablet**: Entrambi i metodi supportati
-
-## SEO e Accessibilità
-
-- Semantic HTML5
-- ARIA labels per controlli
-- Keyboard navigation completa
-- Contrasto WCAG compliant
-- Metadata OpenGraph
-
-## Performance
-
-- Canvas rendering ottimizzato
-- requestAnimationFrame per game loop
-- React memoization dove appropriato
-- Static generation per pagine Next.js
-
-## Aggiornamenti Futuri
-
-- [ ] Sistema audio con Howler.js
-- [ ] Classifica online
-- [ ] Modalità multiplayer
-- [ ] Skin personalizzate
-- [ ] Achievement system
-- [ ] PWA support
+- [x] Architettura base
+- [x] Serpente con movimento e crescita
+- [x] Cibo e power-ups
+- [x] Sistema particelle
+- [x] HUD e griglia
+- [x] Audio sintetizzato
+- [x] Salvataggio punteggi
+- [x] Schermate (menu, game over, pausa, classifica)
+- [x] Icona procedurale
+- [ ] Effetti schermo shake su collisione
+- [ ] Modalità difficoltà (facile/medio/difficile)
+- [ ] Wall mode (attraversa i muri)
+- [ ] Obstacles (ostacoli casuali)
+- [ ] Combo system (mangiare cibo in rapida successione)

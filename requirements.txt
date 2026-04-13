@@ -1,0 +1,4 @@
+# Snake Ultimate 5.1 - Dipendenze Python
+# Installa con: pip install -r requirements.txt
+
+pygame>=2.5.0
